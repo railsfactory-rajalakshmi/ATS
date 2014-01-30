@@ -1,11 +1,20 @@
+= begin
+30.01.2014
+Today I have tried with roo gem since It could work with google doc,excel and also in ods files,
+Also I have take screen shots of the files, I have run the code for sbtn browser with chrome browser
+=end
+
 require 'selenium-webdriver'
-require 'spreadsheet'
+require 'roo'
 class Test
 
+File.exist?("./tmp") ? FileUtils.rm_rf("./tmp/.") : FileUtils.mkdir_p("./tmp/")
+$temp_path = "./tmp"
 def initialize
-@browser = Selenium::WebDriver.for(:firefox)  
+ @browser = Selenium::WebDriver.for(:chrome)  
 end
-def login(uname,pw)
+
+def login(uname,pw, page_name)
 
 #url trigger
 @browser.get('http://localhost:3000/')
@@ -19,9 +28,11 @@ user.send_keys(uname)
 pwd = @browser.find_element(:id, 'user_password')
 pwd.send_keys(pw)
 button = @browser.find_element(:id , 'user_submit')
+@browser.save_screenshot("#{$temp_path}/" + page_name + ".png")
 button.click
 end
-def contact_us
+
+def contact_us(page_name)
  contact= @browser.find_element(:xpath,"/html/body/div/ul/li[2]/a")
  contact.click
  name=@browser.find_element(:id,"contact_name")
@@ -37,6 +48,7 @@ def contact_us
  contact_description=@browser.find_element(:id,"contact_description")
  contact_description.send_keys('This is a test for ats')
  submit =@browser.find_element(:id , "contact_submit")
+@browser.save_screenshot("#{$temp_path}/" + page_name + ".png")
  submit.click
 end
 #~ def close
@@ -44,19 +56,15 @@ end
 #~ end
 end
 
-Spreadsheet.client_encoding = 'UTF-8'
-book = Spreadsheet.open '/home/rajalakshmi/ATS/test.xls'
-sheet1 = book.worksheet 0
-sheet1.each do |row|
-@uname =row[0]
-p @uname
-@pwd =row[1]
-p @pwd
-end
+
+oo = Roo::Excel.new("test.xls")
+oo.default_sheet = oo.sheets.first
+@uname =oo.cell(1,1)
+@pwd = oo.cell(2,1).to_i
 obj = Test.new
-obj.login(@uname,@pwd)
-obj.contact_us
-#~ obj.close
+obj.login(@uname,@pwd, "login")
+obj.contact_us("contact")
+
 
 
 
