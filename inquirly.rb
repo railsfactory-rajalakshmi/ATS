@@ -17,4 +17,11 @@ submit=@browser.find_element(:class,"signin_submit")
 @browser.save_screenshot("#{path}/" + page_name + i.to_s + ".png")
 submit.click
 i= i + 1
+sleep 5
 @browser.save_screenshot("#{path}/" + page_name + i.to_s + ".png")
+sleep 2
+arrow=@browser.find_element(:class,"arrow-down")
+arrow.click
+logout=@browser.find_element(:xpath,"/html/body/div/div/div[2]/div/a[2]")
+logout.click
+@browser.close
