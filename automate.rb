@@ -1,7 +1,7 @@
 require 'ostruct'
 require 'selenium-webdriver'
 
-class AutomateUser
+class AutomateUser 
 	
 	def data
 		#website data
@@ -17,21 +17,20 @@ class AutomateUser
 	end
 	
 	def setup
-		#~ @wait = Selenium::WebDriver::Wait.new(:timeout => 10) # seconds
+		@wait = Selenium::WebDriver::Wait.new(:timeout => 10) # seconds
 		@browser =  Selenium::WebDriver.for(:firefox) 
 		@browser.get(@website.url)		
 	end
 	
-	def login_page
+	def test_login_page
 		tries = 0
 		begin
 		#home page, get sign in link
-    @browser.find_element(:link,@login_ele.sign_in_link).click
-		@browser.find_element(:link,@login_ele.sign_in_link).displayed? 
+		element_click(@login_ele.sign_in_link,'link')
     #login page
-		@browser.find_element(:id, @login_ele.username_id).send_keys(@user.username)
-		@browser.find_element(:id, @login_ele.password_id).send_keys(@user.password)
-		@browser.find_element(:id,@login_ele.submit_id).click
+		fill_text(@login_ele.username_id,@user.username)
+		fill_text(@login_ele.password_id,@user.password)
+	  element_click(@login_ele.submit_id)
 		rescue Exception => msg 
 		tries += 1
 		p msg
@@ -44,7 +43,7 @@ class AutomateUser
 	def dashboard_page
 		tries = 0
 		begin
-		@browser.find_element(:class,@dash_ele.my_account_class).click
+		  element_click(@dash_ele.my_account_class,'class')
 		rescue Exception => msg 
 		tries += 1
 		p msg
@@ -61,12 +60,12 @@ class AutomateUser
 		fill_text(@myaccount_ele.mail_id,@user.mail)
 		fill_select(@myaccount_ele.lang_id,@user.language)
 		fill_select(@myaccount_ele.mail_notification_id,@user.mail_notification)
-		@browser.find_element(:id,@myaccount_ele.pref_notified_id).click
-		@browser.find_element(:id,@myaccount_ele.pref_mail).click
+		element_click(@myaccount_ele.pref_notified_id)
+		element_click(@myaccount_ele.pref_mail)
 		fill_select(@myaccount_ele.zone,@user.pref_time_zone)
 		fill_select(@myaccount_ele.sorting,@user.pref_comments_sorting)
-	  @browser.find_element(:id,@myaccount_ele.unsaved).click
-		@browser.find_element(:id,@myaccount_ele.acct_id).click
+		element_click(@myaccount_ele.unsaved)
+	  element_click(@myaccount_ele.acct_id)
 		rescue
 		tries += 1
     retry if tries <= 3
@@ -77,13 +76,11 @@ class AutomateUser
 	def  project
 		tries = 0
 		begin
-		@browser.find_element(:link,@project_ele.link).click
-		@browser.find_element(:id,@project_ele.id).click
-		@browser.find_element(:link,@project_ele.bug_link).displayed? 
-		@browser.find_element(:link,@project_ele.bug_link).click
-	  @browser.find_element(:link,@project_ele.new_issue).click
-		@browser.find_element(:id,@project_ele.itracker_id).displayed?
-		fill_select(@project_ele.itracker_id,@proj_data.tracker)
+		element_click(@project_ele.link,'link')
+		element_click(@project_ele.id)
+		element_click(@project_ele.bug_link,'link')
+		element_click(@project_ele.new_issue,'link')
+	  fill_select(@project_ele.itracker_id,@proj_data.tracker)
 		sleep 2
 	  fill_text(@project_ele.subject_id,@proj_data.subject)
 		bold =@browser.find_element(:class,@project_ele.bold_class).click
@@ -94,15 +91,15 @@ class AutomateUser
 		@browser.find_elements(:class, @project_ele.date_img)[0].click
 		fill_select(@project_ele.year_cl,@proj_data.start_year,'class')
 		fill_select(@project_ele.month_css,@proj_data.start_month,'class')
-		@browser.find_element(:link, @proj_data.date).click
+		element_click(@proj_data.date,'link')
 		@browser.find_elements(:class, @project_ele.date_img)[1].click
 		fill_select(@project_ele.year_cl,@proj_data.due_year,'class')
 		fill_select(@project_ele.month_css,@proj_data.due_month,'class')
-		@browser.find_element(:link, @project_ele.date).click
-    @browser.find_element(:id, @project_ele.est_hours).send_keys(@proj_data.est_hours)
+    element_click(@project_ele.date,'link')
+		fill_text(@project_ele.est_hours,@proj_data.est_hours)
 		fill_select(@project_ele.done_id, @proj_data.done)
-    @browser.find_element(:name, @project_ele.submit).click
-		rescue Exception => msg 
+		element_click(@project_ele.submit,'name')
+    rescue Exception => msg 
 		tries += 1
 		p msg
 	  retry if tries <= 3
@@ -125,13 +122,24 @@ class AutomateUser
 		element_id.send_keys(value)
 	end
 	
+	def element_click(element,type='id')
+			if type == 'link'
+				@wait.until{  @browser.find_element(:link,element).click}
+			elsif type == 'class'
+				@wait.until{ @browser.find_element(:class,element).click}
+			elsif type == 'id'
+			  @wait.until{ @browser.find_element(:id,element).click}
+			elsif type == 'name'
+			@wait.until{ @browser.find_element(:name,element).click}
+	 end
+	end
 	
 
 end
 test=AutomateUser.new
 test.data
 test.setup
-test.login_page
+test.test_login_page
 test.dashboard_page
 test.myaccount
 test.project
