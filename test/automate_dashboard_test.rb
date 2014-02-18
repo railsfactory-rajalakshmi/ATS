@@ -1,19 +1,25 @@
 require 'ostruct'
 require 'selenium-webdriver'
 require 'test/unit'
+require './data'
+ require './browser_helper'
+
+
+
 class TestAutomateUser < Test::Unit::TestCase
+		include BrowserHelper
+	
+	
 	@dash_ele = ''
-	def data
+		def data
 		#website data
-		@login_ele = OpenStruct.new(:sign_in_link=>"Sign in",:username_id=>"username",:password_id=>"password",:submit_id=>"login_submit_id")
-		@dash_ele= OpenStruct.new(:my_account_class =>"my-account")
-		@myaccount_ele = OpenStruct.new(:fname_id =>"user_firstname", :lname_id =>"user_lastname",:mail_id =>"user_mail", :lang_id=>"user_language", :mail_notification_id=>"user_mail_notification", :pref_notified_id=>"pref_no_self_notified", :pref_mail=>"pref_hide_mail",:zone=>"pref_time_zone",:sorting=>"pref_comments_sorting",:unsaved=>"pref_warn_on_leaving_unsaved", :acct_id=>"myaccount_id")
-		#project elemnet id,class, links
-		@project_ele= OpenStruct.new(:link=>"Projects",:id=>"project_id1",:bug_link=>"Bug",:new_issue =>"New issue",:itracker_id=>"issue_tracker_id",:subject_id=>"issue_subject",:description_id => "issue_description",:bold_class=>"jstb_strong",:status_id=>"issue_status_id",:priority_id=>"issue_priority_id",:assign_id=>"issue_assigned_to_id",:date_img=>"ui-datepicker-trigger",:date_css=>"img.ui-datepicker-trigger",:date=>"14",:year_cl=>"ui-datepicker-year",:dpick_image=>"#due_date_area > img.ui-datepicker-trigger", :month_css	=>"ui-datepicker-month",:est_hours=>"issue_estimated_hours",:done_id=>"issue_done_ratio",:submit=>"commit")
-		@website = OpenStruct.new(:url => "localhost:3000")
-		#user data
-		@user = OpenStruct.new(:username => "rajalakshmi", :password=>"123456789", :firstname=>'Rajalakshmi', :lastname=>'Shanmugam',:mail=>'rajalakshmi@railsfactory.com', :language=>'English', :mail_notification=>"No events",:pref_time_zone=>"(GMT-10:00) Hawaii",:pref_comments_sorting=>"In reverse chronological order")
-		@proj_data=OpenStruct.new(:tracker => "Feature",:subject=>"IE error",:desc=>"IE error description",:status=>"In Progress"	, :priority =>"Urgent", :assigne=>"Rajalakshmi Shanmugam", :start_year=>"2012" , :start_month =>"May", :date=>"5", :due_year =>"2014", :due_month=>"Jun" , :est_hours=>"15", :done=>"30 %")
+		@login_ele = Data.login_elements
+		@dash_ele= Data.dashboard_elements
+		@myaccount_ele = Data.myaccounts_elements
+		@project_ele=  Data.project_elements
+		@user = Data.user_data
+				@proj_data=  Data.project_data
+				@website = Data.website_url
 	end
 	
 	def setup
@@ -123,31 +129,6 @@ class TestAutomateUser < Test::Unit::TestCase
 	end
 
 	
-	def fill_select(element,value,type='id')
-		if type == 'id'
-			Selenium::WebDriver::Support::Select.new(@browser.find_element(:id ,element)).select_by(:text, value)
-		elsif type == 'class'
-			Selenium::WebDriver::Support::Select.new(@browser.find_element(:class ,element)).select_by(:text, value)
-		end
-	end
-	
-	def fill_text(element,value)
-		element_id=@browser.find_element(:id,element)
-		element_id.clear
-		element_id.send_keys(value)
-	end
-	
-	def element_click(element,type='id')
-			if type == 'link'
-				@wait.until{  @browser.find_element(:link,element).click}
-			elsif type == 'class'
-				@wait.until{ @browser.find_element(:class,element).click}
-			elsif type == 'id'
-			  @wait.until{ @browser.find_element(:id,element).click}
-			elsif type == 'name'
-			@wait.until{ @browser.find_element(:name,element).click}
-	 end
-	end
 	
 
 end
