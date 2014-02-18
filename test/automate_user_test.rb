@@ -147,7 +147,7 @@ class AutomateUser < Test::Unit::TestCase
 	
 
 end
-obj=AutomateUser.new(true)
+obj=AutomateUser.new
 obj.data
 obj.setup
 obj.test_login
