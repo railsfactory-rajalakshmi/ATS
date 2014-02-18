@@ -9,9 +9,6 @@ require './data'
 
 class TestAutomateUser < Test::Unit::TestCase
 	include BrowserHelper
-	
-	@dash_ele = ''
-	
 	def data
 		#website data
 		@login_ele = Data.login_elements
@@ -19,8 +16,8 @@ class TestAutomateUser < Test::Unit::TestCase
 		@myaccount_ele = Data.myaccounts_elements
 		@project_ele=  Data.project_elements
 		@user = Data.user_data
-				@proj_data=  Data.project_data
-				@website = Data.website_url
+		@proj_data=  Data.project_data
+		@website = Data.website_url
 	end
 	
 	def setup
@@ -38,24 +35,20 @@ class TestAutomateUser < Test::Unit::TestCase
   end
 	
 	def test_login
-		tries = 0
-		data
-		begin
 		#home page, get sign in link
 		element_click(@login_ele.sign_in_link,'link')
     #login page
+		value =@browser.page_source.include? "Register"
+		assert_equal true,value
 		fill_text(@login_ele.username_id,@user.username)
 		fill_text(@login_ele.password_id,@user.password)
 	  element_click(@login_ele.submit_id)
-		rescue Exception => msg 
-		tries += 1
-		p msg
-    retry if tries <= 3
-	  p "element cannot be found in login page"
-	  end
+		expected= @browser.page_source.include? ("rajalakshmi")
+		assert_equal expected, true
+		assert_equal "Home\nLatest projects\nExample (02/13/2014 01:52 AM)", @browser.find_element(:id, "content").text
+		assert_equal "http://localhost:3000/", @browser.current_url
+    
 	end
-
-	
 	
 	
 end
