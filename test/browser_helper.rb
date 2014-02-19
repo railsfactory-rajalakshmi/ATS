@@ -11,9 +11,9 @@
 	end
 	
 	def fill_text(element,value)
-		element_id=@browser.find_element(:id,element)
+		element_id=@wait.until{@browser.find_element(:id,element)}
 		element_id.clear
-		element_id.send_keys(value)
+		@wait.until{element_id.send_keys(value)}
 	end
 	
 	def element_click(element,type='id')

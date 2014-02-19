@@ -35,14 +35,18 @@ class TestAutomateUser < Test::Unit::TestCase
   end
 	
 	def test_login
+		p "Login into Redmine"
 		#home page, get sign in link
 		element_click(@login_ele.sign_in_link,'link')
     #login page
 		value =@browser.page_source.include? "Register"
 		assert_equal true,value
+		
 		fill_text(@login_ele.username_id,@user.username)
 		fill_text(@login_ele.password_id,@user.password)
+		p "Values Entered for Login"
 	  element_click(@login_ele.submit_id)
+		p "Logged in successfully"
 		expected= @browser.page_source.include? ("rajalakshmi")
 		assert_equal expected, true
 		assert_equal "Home\nLatest projects\nExample (02/13/2014 01:52 AM)", @browser.find_element(:id, "content").text
