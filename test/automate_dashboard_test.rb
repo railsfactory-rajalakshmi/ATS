@@ -57,7 +57,6 @@ class TestAutomateUser < Test::Unit::TestCase
 		assert_equal "My account - Redmine", @browser.title
 		assert_equal "Change password", @browser.find_element(:link, "Change password").text
 		assert element_present?(:link, "Delete my account")
-    assert element_present?(:id, "header") 
 		assert_equal "http://localhost:3000/my/account", @browser.current_url
 		assert_equal "Reset", @browser.find_element(:link, "Reset").text 
 		fill_text(@myaccount_ele.fname_id,@user.firstname)
@@ -82,8 +81,7 @@ class TestAutomateUser < Test::Unit::TestCase
 	  assert element_present?(:link, "View all issues")
     assert element_present?(:link, "Overall spent time")
     assert element_present?(:link, "Overall activity")
-    assert element_present?(:css, "h2")
-		p "Successfully into project page"
+  	p "Successfully into project page"
 		element_click(@project_ele.id)
 		element_click(@project_ele.bug_link,'link')
 		element_click(@project_ele.new_issue,'link')
@@ -108,12 +106,7 @@ class TestAutomateUser < Test::Unit::TestCase
 		element_click(@project_ele.submit,'name')
 	end
 
-  def element_present?(how, what)
-   @browser.find_element(how, what)
-    true
-  rescue Selenium::WebDriver::Error::NoSuchElementError
-    false
-  end
+
 	
 end
 

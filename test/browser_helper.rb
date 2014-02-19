@@ -26,8 +26,14 @@
 			elsif type == 'name'
 			@wait.until{ @browser.find_element(:name,element).click}
 	 end
-end
-	
+ end
+ 
+ def element_present?(how, what)
+   @browser.find_element(how, what)
+    true
+  rescue Selenium::WebDriver::Error::NoSuchElementError
+    false
+  end
 
  
  

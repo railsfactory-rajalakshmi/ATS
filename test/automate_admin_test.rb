@@ -1,19 +1,19 @@
 require 'ostruct'
 require 'selenium-webdriver'
 require 'test/unit'
-require './data'
+require './data_admin'
  require './browser_helper'
 
 
 
 
-class TestAutomateUser < Test::Unit::TestCase
+class TestAutomateAdmin < Test::Unit::TestCase
 	include BrowserHelper
 	def data
 		#website data
-		@login_ele = Data.login_elements
-		@user = Data.user_data
-		@website = Data.website_url
+		@login_element= DataAdmin.login_elements
+		@admin_data = DataAdmin.admin_data
+		@website = DataAdmin.website_url
 	end
 	
 	def setup
@@ -26,21 +26,22 @@ class TestAutomateUser < Test::Unit::TestCase
 	
 	def teardown
     @browser.quit
-  end
+	end
 	
 	def test_login
-		p "Login into Redmine"
+		p "Login into Redmine as admin"
 		#home page, get sign in link
-		element_click(@login_ele.sign_in_link,'link')
+		element_click(@login_element.sign_in_link,'link')
     #login page
 		value =@browser.page_source.include? "Register"
 		assert_equal true,value
-		fill_text(@login_ele.username_id,@user.username)
-		fill_text(@login_ele.password_id,@user.password)
+		
+		fill_text(@login_element.username_id,@admin_data.username)
+		fill_text(@login_element.password_id,@admin_data.password)
 		p "Values Entered for Login"
-	  element_click(@login_ele.submit_id)
-		p "Logged in successfully"
-		expected= @browser.page_source.include? ("rajalakshmi")
+	  element_click(@login_element.submit_id)
+		p "Admin Logged in successfully"
+		expected= @browser.page_source.include? ("admin")
 		assert_equal expected, true
 		assert_equal "Home\nLatest projects\nExample (02/13/2014 01:52 AM)", @browser.find_element(:id, "content").text
 		assert_equal "http://localhost:3000/", @browser.current_url
