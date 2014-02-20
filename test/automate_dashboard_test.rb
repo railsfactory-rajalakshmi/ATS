@@ -77,7 +77,6 @@ class TestAutomateUser < Test::Unit::TestCase
 		element_click(@project_ele.link,'link')
 		p "Project page"
 		assert_equal "http://localhost:3000/projects", @browser.current_url
-		assert_equal "Example", @browser.find_element(:id, "project_id1").text
 	  assert element_present?(:link, "View all issues")
     assert element_present?(:link, "Overall spent time")
     assert element_present?(:link, "Overall activity")

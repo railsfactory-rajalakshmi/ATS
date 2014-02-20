@@ -42,7 +42,6 @@ class TestAutomateUser < Test::Unit::TestCase
 		p "Logged in successfully"
 		expected= @browser.page_source.include? ("rajalakshmi")
 		assert_equal expected, true
-		assert_equal "Home\nLatest projects\nExample (02/13/2014 01:52 AM)", @browser.find_element(:id, "content").text
 		assert_equal "http://localhost:3000/", @browser.current_url
     
 	end

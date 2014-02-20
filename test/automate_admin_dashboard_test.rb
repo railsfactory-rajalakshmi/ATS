@@ -2,8 +2,8 @@ require 'ostruct'
 require 'selenium-webdriver'
 require 'test/unit'
 require './data_admin'
- require './browser_helper'
- require './db'
+require './browser_helper'
+
 
 class TestAutomateAdminDashboard < Test::Unit::TestCase
 	include BrowserHelper
@@ -48,7 +48,7 @@ class TestAutomateAdminDashboard < Test::Unit::TestCase
 		p "verify adminstration link if true through url"
 		assert_equal("http://localhost:3000/admin",get_url)
 		@browser.find_elements(:class,@admin_link_elements.project_link)[1].click
-			fill_select(@admin_link_elements.status_id,@admin_project_status.status)
+		fill_select(@admin_link_elements.status_id,@admin_project_status.status)
 		element_click(@admin_link_elements.apply,'class')
 		p "Check for the status and check if the project is displayed"
 		assert element_present?(:link , "Archive")
@@ -65,10 +65,7 @@ class TestAutomateAdminDashboard < Test::Unit::TestCase
 	  fill_text(@admin_project_elements.project_identifier,@admin_project_data.project_identifier)
 	  fill_text(@admin_project_elements.project_homepage,@admin_project_data.project_homepage)
 		element_click(@admin_project_elements.submit_name,'name')
-		get_url = @browser.current_url
-		@connect = Connect.db_connect
-		@project =  @connect.query("SELECT * from projects order by created_on desc limit 1")
-		assert_equal("http://localhost:3000/projects/#{@project.fetch_row[8]}/settings",get_url)	
+	
 	end
 	
 	
