@@ -30,10 +30,23 @@ class TestSauceRailsfactory < Test::Unit::TestCase
 	
  def setup
 	data
+	File.exist?("./tmp") ? FileUtils.rm_rf("./tmp/.") : FileUtils.mkdir_p("./tmp/")
+	@temp_path = "./tmp"
 	p @browser_capablity 
-	caps = browser(@browser_capablity.browser)
-	caps.platform = @browser_capablity.platform
-	caps.version = @browser_capablity.version
+	puts "Please enter the browser u want to run the test"
+  browser =gets.chomp
+	if(browser=='internet_explorer')
+		puts "please choose which windows platform you want to run the test('Windows 8 / Windows 8.1 / Windows 7 / Windows XP)"
+		platform= gets.chomp
+	else
+	puts "Please enter the platform u want to run the test"
+	platform =gets.chomp
+	end
+	puts "Please enter the version of the browser u want to run the test"
+	version = gets.chomp
+	caps = browser(browser)
+	caps.platform = platform
+	caps.version = version
   @driver = Selenium::WebDriver.for(
   :remote,
   :url => "http://" + @browser_capablity.saucelabs_uname + ":" + @browser_capablity.access_key + "@ondemand.saucelabs.com:80/wd/hub",
@@ -49,21 +62,24 @@ class TestSauceRailsfactory < Test::Unit::TestCase
   
   def test_sauce_railsfactory
     @driver.get(@base_url + "/")
-
+		screenshots(@page_title.index)
     assert_equal @page_title.index, @driver.title
-		p @page_content.home
-    page_include(@page_content.home)
+		
+		 page_include(@page_content.home)
+		screenshots(@page_title.about_us)
 		
 		@driver.find_element(:link, @link_elements.about_us).click
     assert_equal @page_title.about_us, @driver.title
 		page_include(	@page_content.about_us)
+		screenshots(@page_title.about_us+"1")
 		
     @driver.find_element(:link, @link_elements.services).click
 		assert_equal @page_title.services, @driver.title
-   
+   		screenshots(@page_title.services)
 	 
     @driver.find_element(:link,  @link_elements.careers ).click
     assert_equal  @page_title.careers, @driver.title
+		screenshots(@page_title.careers)
   end
   
 
@@ -73,5 +89,8 @@ def page_include(content)
 		assert_equal true,value
 end
 
+def screenshots(page)
+	@driver.save_screenshot("#{@temp_path}/" + page + ".png")
+end
 	
 end
